@@ -9,6 +9,8 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import logout
+
 
 def home(request):
     print(request.user.is_authenticated)
@@ -68,9 +70,12 @@ def user_posts(request):
     return render(request, 'users/user_posts.html', {'posts': posts})
 
 
-# # @login_required
+# @login_required
 # def edit_profile(request):
 
+def logout_view(request):
+    logout(request)  
+    return redirect('home')
    
 
 

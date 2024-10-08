@@ -7,4 +7,7 @@
 <p><strong>First Name:</strong> {{ user.first_name }}</p>
 <p><strong>Last Name:</strong> {{ user.last_name }}</p>
 
-
+<form action="{% url 'logout' %}" method="post" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-secondary">Logout</button>
+</form>
