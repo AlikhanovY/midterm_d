@@ -92,13 +92,11 @@ def follow_user(request, user_id):
     user_to_follow = get_object_or_404(User, id=user_id)
     if request.method == 'POST' and user_to_follow != request.user:
         Follow.objects.get_or_create(follower=request.user, following=user_to_follow)
-    return redirect('profile', user_id=user_to_follow.id)
-    
-
+    return redirect('profile_view', username=user_to_follow.username)
 
 @login_required
 def unfollow_user(request, user_id):
     user_to_unfollow = get_object_or_404(User, id=user_id)
     if request.method == 'POST' and user_to_unfollow != request.user:
         Follow.objects.filter(follower=request.user, following=user_to_unfollow).delete()
-    return redirect('profile', user_id=user_to_unfollow.id)
+    return redirect('profile_view', username=user_to_unfollow.username)
