@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Follow
 from blog.models import Post
-from .forms import LoginForm
+from .forms import LoginForm, ProfileForm
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
@@ -70,8 +70,16 @@ def user_posts(request):
     return render(request, 'users/user_posts.html', {'posts': posts})
 
 
-# @login_required
-# def edit_profile(request):
+def edit_profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)  
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile_view', username=request.user.username)
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'users/edit_profile.html', {'form': form})
 
 def logout_view(request):
     logout(request)  
@@ -79,10 +87,18 @@ def logout_view(request):
    
 
 
-# @login_required
-# def follow_user(request, username):
+@login_required
+def follow_user(request, user_id):
+    user_to_follow = get_object_or_404(User, id=user_id)
+    if request.method == 'POST' and user_to_follow != request.user:
+        Follow.objects.get_or_create(follower=request.user, following=user_to_follow)
+    return redirect('profile', user_id=user_to_follow.id)
     
 
 
-# @login_required
-# def unfollow_user(request, username):
+@login_required
+def unfollow_user(request, user_id):
+    user_to_unfollow = get_object_or_404(User, id=user_id)
+    if request.method == 'POST' and user_to_unfollow != request.user:
+        Follow.objects.filter(follower=request.user, following=user_to_unfollow).delete()
+    return redirect('profile', user_id=user_to_unfollow.id)

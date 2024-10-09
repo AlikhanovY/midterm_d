@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 
 from .models import Post, Comment
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 
 def list_posts(request):
     posts = Post.objects.all()
@@ -41,5 +41,24 @@ def post_delete(request, post_id):
         post.delete()
         return redirect('list_posts')
     return render(request, 'blog/post_confirm_delete.html', {'post': post})
+
+def comment_list(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comments = Comment.objects.filter(post=post)
+    return render(request, 'blog/comment_list.html', {'post': post, 'comments': comments})
+
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user 
+            comment.save()
+            return redirect('comment_list', post_id=post.id)
+    else:
+        form = CommentForm()
+    return render(request, 'blog/add_comment.html', {'form': form, 'post': post})
 
 

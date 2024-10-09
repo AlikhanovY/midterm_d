@@ -1,4 +1,4 @@
-<!-- {% load static %} -->
+<!-- {% load static %}
 <style>
 .bekarys-profile-header {
     background: linear-gradient(135deg, #1d3557, #457b9d);
@@ -50,7 +50,9 @@
 .post-card-footer a:hover {
     color: #a8dadc;
     text-decoration: underline;
-}</style>
+}</style> -->
+
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -59,7 +61,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ user.username }}'s Profile</title>
-    <link rel="stylesheet" href="{% static 'users/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'users/style.css' %}">
 </head>
 <body>
     <div class="bekarys-profile-header">
